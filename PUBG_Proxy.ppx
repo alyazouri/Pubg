@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ProxifierProfile version="101" platform="Windows">
+  <ProxyList>
+    <Proxy enabled="true" type="SOCKS5" address="149.200.200.44" port="1080" />
+  </ProxyList>
+  <ChainList />
+  <RuleList>
+    <Rule enabled="true">
+      <Name>PUBG Mobile</Name>
+      <Applications>
+        <Application>tsgame.exe</Application>
+        <Application>AndroidEmulator.exe</Application>
+        <Application>HD-Player.exe</Application>
+        <Application>GameLoop.exe</Application>
+      </Applications>
+      <Action type="Proxy">149.200.200.44:1080</Action>
+    </Rule>
+    <Rule enabled="true">
+      <Name>Default</Name>
+      <Action type="Direct" />
+    </Rule>
+  </RuleList>
+</ProxifierProfile>
