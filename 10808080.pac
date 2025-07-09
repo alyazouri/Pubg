@@ -13,7 +13,7 @@ function FindProxyForURL(url, host) {
         shExpMatch(host, "*.amazonaws.com")) {
         
         // تحسين: جرب بروكسي رئيسي، وإذا فشل استخدم آخر
-        return "PROXY 91.106.109.28:8080; PROXY 91.106.109.28:1080; DIRECT";
+        return "PROXY 91.106.109.28:8080; PROXY 91.106.109.28:80; DIRECT";
     }
 
     // استثناء: مواقع الفيديو والتطبيقات الثقيلة تبقى مباشرة
