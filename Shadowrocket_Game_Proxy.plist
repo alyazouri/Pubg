@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+"http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>General</key>
+    <dict>
+        <key>Type</key>
+        <string>Shadowrocket</string>
+        <key>Version</key>
+        <string>1.0</string>
+    </dict>
+    <key>Proxy</key>
+    <array>
+        <dict>
+            <key>Name</key>
+            <string>Jordan Game Proxy</string>
+            <key>Type</key>
+            <string>SOCKS5</string>
+            <key>Host</key>
+            <string>62.72.166.233</string>
+            <key>Port</key>
+            <integer>8080</integer>
+            <key>UDPRelay</key>
+            <true/>
+        </dict>
+    </array>
+    <key>Rule</key>
+    <array>
+        <!-- بورتات اللعبة UDP -->
+        <dict>
+            <key>Type</key>
+            <string>Port</string>
+            <key>Value</key>
+            <string>10012-10039</string>
+            <key>Action</key>
+            <string>Proxy</string>
+        </dict>
+        <dict>
+            <key>Type</key>
+            <string>Port</string>
+            <key>Value</key>
+            <string>14000-18000</string>
+            <key>Action</key>
+            <string>Proxy</string>
+        </dict>
+        <dict>
+            <key>Type</key>
+            <string>Port</string>
+            <key>Value</key>
+            <string>20000-20002</string>
+            <key>Action</key>
+            <string>Proxy</string>
+        </dict>
+    </array>
+</dict>
+</plist>
