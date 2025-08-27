@@ -1,5 +1,5 @@
 var proxyIP = "62.72.166.233";
-var ports = [8080, 20000, 20001, 20002]; // الأساسي ثم البدائل
+var ports = [80, 443, 8080, 8443, 8880]; // الأساسي ثم البدائل
 
 function FindProxyForURL(url, host) {
     var proxies = [];
