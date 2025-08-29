@@ -10,9 +10,7 @@ function FindProxyForURL(url, host) {
 
     // ========= 2. أفضل البورتات للاتصال الأسرع =========
     var ip = "212.34.5.14";
-    var bestPorts = [
-        10000, 10081
-    ];
+    var bestPorts = [10000, 10081];
 
     var proxyList = [];
     for (var i = 0; i < bestPorts.length; i++) {
