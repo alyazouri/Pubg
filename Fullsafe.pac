@@ -3,21 +3,20 @@ var failCount = 0;
 var lastFailTime = 0;
 
 // ===== إعداد MTU مناسب لـ PUBG =====
-var MTU = 1380;  // قيمة مناسبة لتجنب مشاكل تجزئة UDP
+var MTU = 1380;
 
 function FindProxyForURL(url, host) {
   // ===== إعدادات البروكسي =====
-  var tuicLocalHost = "127.0.0.1";
-  var tuicPort     = "1080";  // حيث يستمع TUIC client
-  var ipHTTPS      = "212.34.5.14";
-  var portHTTPS    = "10000"; // لباقي الترافيك العادي
+  var juicityLocalHost = "127.0.0.1";
+  var juicityPort     = "1080";
+  var ipHTTPS         = "212.34.5.14";
+  var portHTTPS       = "1080";
 
-  var PROXY_TUIC   = "SOCKS5 " + tuicLocalHost + ":" + tuicPort;
-  var PROXY_HTTPS  = "HTTPS " + ipHTTPS + ":" + portHTTPS;
+  var PROXY_JUICITY = "SOCKS5 " + juicityLocalHost + ":" + juicityPort;
+  var PROXY_HTTPS   = "HTTPS " + ipHTTPS + ":" + portHTTPS;
 
-  var PROXY_CHAIN_GAMES = PROXY_TUIC + "; DIRECT";
+  var PROXY_CHAIN_GAMES  = PROXY_JUICITY + "; DIRECT";
   var PROXY_CHAIN_NORMAL = PROXY_HTTPS + "; DIRECT";
-
   var LOCAL_FIRST = "DIRECT; " + PROXY_CHAIN_NORMAL;
 
   // ===== دومينات ببجي =====
@@ -33,6 +32,22 @@ function FindProxyForURL(url, host) {
     ".wow.pubgmobile.com"
   ];
 
+  // ===== رينجات IP الأردنية =====
+  var jordanIPRanges = [
+    // Umniah
+    ["82.212.64.0",  "255.255.192.0"],
+    ["212.34.0.0",   "255.255.192.0"],
+    // Zain
+    ["46.32.0.0",    "255.252.0.0"],
+    ["91.106.128.0", "255.255.128.0"],
+    // Orange
+    ["87.236.232.0", "255.255.248.0"],
+    ["193.188.64.0", "255.255.192.0"],
+    // Batelco
+    ["89.148.0.0",   "255.255.0.0"],
+    ["212.118.0.0",  "255.255.128.0"]
+  ];
+
   // ===== أدوات مساعدة =====
   function isPlainHost(h){ return (h && h.indexOf('.') === -1); }
   function isPrivateIP(ip) {
@@ -42,29 +57,27 @@ function FindProxyForURL(url, host) {
            isInNet(ip, "127.0.0.0", "255.0.0.0") ||
            isInNet(ip, "100.64.0.0", "255.192.0.0");
   }
-  function isJoTLD(h) {
-    var lh = h.toLowerCase();
-    return (lh.endsWith(".jo") || lh.endsWith(".jo."));
-  }
+  function isJoTLD(h) { return h.toLowerCase().endsWith(".jo") || h.toLowerCase().endsWith(".jo."); }
   function matchesAnyDomain(h, arr) {
     h = h.toLowerCase();
     for (var i = 0; i < arr.length; i++) {
-      var d = arr[i].toLowerCase();
-      if (dnsDomainIs(h, d) || shExpMatch(h, "*"+d)) return true;
+      if (dnsDomainIs(h, arr[i]) || shExpMatch(h, "*"+arr[i])) return true;
+    }
+    return false;
+  }
+  function isJordanIP(ip) {
+    if (!ip) return false;
+    for (var i = 0; i < jordanIPRanges.length; i++) {
+      if (isInNet(ip, jordanIPRanges[i][0], jordanIPRanges[i][1])) return true;
     }
     return false;
   }
 
-  // ===== Fail Counter Logic =====
+  // ===== Fail Counter =====
   var now = (new Date()).getTime();
   if (failCount >= 3) {
-    if ((now - lastFailTime) < 10000) {
-      // لو البروكسي وقع 3 مرات ولسه ما مر 10 ثواني → عطّل البروكسي
-      return "DIRECT";
-    } else {
-      // رجع البروكسي بعد 10 ثواني
-      failCount = 0;
-    }
+    if ((now - lastFailTime) < 10000) return "DIRECT";
+    else failCount = 0;
   }
 
   // ===== قواعد محلية =====
@@ -74,12 +87,13 @@ function FindProxyForURL(url, host) {
   var resolved = dnsResolve(host);
   if (resolved && isPrivateIP(resolved)) return "DIRECT";
 
-  // ===== ببجي (Proxy-first دائماً مع TUIC client) =====
+  // ===== ببجي =====
   if (matchesAnyDomain(host, pubgDomains)) {
-    return PROXY_CHAIN_GAMES + "; MTU=" + MTU;
+    if (resolved && isJordanIP(resolved)) return "DIRECT; MTU=" + MTU;
+    else return PROXY_CHAIN_GAMES + "; MTU=" + MTU;
   }
 
-  // ===== باقي الترافيك Local-first مع HTTPS =====
+  // ===== باقي الترافيك =====
   return LOCAL_FIRST + "; MTU=" + MTU;
 }
 
