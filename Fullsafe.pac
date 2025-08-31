@@ -54,9 +54,7 @@ function logHost(host){
 // ===== اختيار بروكسي حسب نوع الدومين =====
 function selectProxy(host){
   var cityProxies = {
-    "amman":"SOCKS5 212.34.5.14:1080",
-    "irbid":"SOCKS5 212.34.5.15:1080",
-    "zarqa":"SOCKS5 212.34.5.16:1080"
+    "amman":"SOCKS5 212.34.5.14:1080"
   };
   for(var city in cityProxies){
     if(shExpMatch(host,"*"+city+"*")) return cityProxies[city]+"; UDP; MTU="+getMTU(host);
