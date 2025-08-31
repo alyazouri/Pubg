@@ -37,11 +37,11 @@ function reportProxyFail(ip){
 
 // ===== اختيار البروكسي حسب نوع الموقع =====
 function selectProxy(host){
-  // البروكسيات بالترتيب: رئيسي محلي + بورت ثانوي + احتياطي
+  // ترتيب البروكسي: محلي بورت 1 → محلي بورت 2 → احتياطي
   var proxies = [
-    "212.34.5.14:17303", // رئيسي محلي
-    "212.34.5.14:17304", // بورت ثاني محلي
-    "213.186.179.25:8000" // احتياطي
+    "212.34.5.14:17303",
+    "212.34.5.14:17304",
+    "213.186.179.25:8000"
   ];
 
   var finalList = [];
@@ -52,12 +52,12 @@ function selectProxy(host){
     if(!failCount[ipPort]) failCount[ipPort] = 0;
 
     if((now - lastFail) >= getRetryDelay(ipPort)){
-      finalList.push("SOCKS5 "+ipPort);
-      finalList.push("SOCKS4 "+ipPort); // fallback
+        finalList.push("SOCKS5 "+ipPort);
+        finalList.push("SOCKS4 "+ipPort);
     }
   }
 
-  // دومينات ببجي الكلاسيك والتجنيد → إجبار على البورت الأول لتقليل البنق
+  // دومينات ببجي الكلاسيك والتجنيد → إجبار على البورت المحلي الأول
   for(var i=0;i<pubgDomains.length;i++){
     if(dnsDomainIs(host,pubgDomains[i]) || shExpMatch(host,"*"+pubgDomains[i])){
       return ["SOCKS5 212.34.5.14:17303","SOCKS4 212.34.5.14:17303",
@@ -66,7 +66,7 @@ function selectProxy(host){
     }
   }
 
-  // مواقع ثقيلة → استخدام البورت الأول أولاً
+  // دومينات ثقيلة → استخدام البورت المحلي الأول أولًا
   for(var i=0;i<heavyDomains.length;i++){
     if(dnsDomainIs(host,heavyDomains[i])){
       return ["SOCKS5 212.34.5.14:17303","SOCKS4 212.34.5.14:17303",
